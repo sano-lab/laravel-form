@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  app:
+    build: ./build/docker/nginx
+    ports:
+      - '80:80'
+    links:
+      - php-fpm
+    volumes:
+      - ./app:/app
+
+  php-fpm:
+    build: ./build/docker/php-fpm
+    links:
+      - db
+    volumes:
+      - ./app:/app
+
+  db:
+    build: ./build/docker/mariadb
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+       MYSQL_ROOT_PASSWORD: root
+       MYSQL_USER: user
+       MYSQL_PASSWORD: pass
+       MYSQL_DATABASE: PETA_DB
